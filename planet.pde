@@ -1,5 +1,10 @@
 class Planet {
-  
+    
+  float sunR = int(random(150, 255));
+  float sunG = int(random(sunR - 150, sunR - 50));
+  float sunB = int(random(0, sunR - 100));
+  color suncolor = color(sunR, sunG, sunB);
+
   float radius;
   float angle;
   float distance;
@@ -52,18 +57,14 @@ class Planet {
     planets = new Planet[total];
     
     for (int i = 0; i < planets.length; i++) {
-      float r = (radius * 0.33)/(level * 0.25 +1);
-      float d = radius + random(95, 570)/factorial(level+1);
+      float r = random(radius * 0.2, radius * 0.45)/(level * 0.25 +1);
+      float d = radius * 2 + random(95, 770)/(factorial(level * 2));
       //float s = random(PI/180);
       planets[i] = new Planet(r, d, false);
-       
-      if (d < radius * 2) {
-      println("too close! distance: ", d, "radius: ", r);
-      d = random(75, 370)/factorial(level+1);
-      }
+
      
      if (level < 3) {
-       float num = random(6) / (level * 2);
+       float num = random(0.5) * radius / (level * 2);
        
        planets[i].spawnMoons(int(num), level+1);
      }
@@ -71,17 +72,20 @@ class Planet {
   }
   
   void show() {
-    
     pushMatrix();
     rotate(angle);    
     translate(distance, 0);
-    stroke(255);
-    fill(100, 100, 100, 100);
-    ellipse(0, 0, radius * 2, radius * 2);
-    
-    //line(-radius, 0, radius, 0);
-    
-    //printArray(planets);
+
+    if (center == true) {
+      noStroke();
+      //ellipse(0, 0, radius * 2, radius * 2);
+      drawGradient(0,0);
+    }
+    else {
+      stroke(255);
+      fill(100, 100, 100, 100);
+      ellipse(0, 0, radius * 2, radius * 2);
+    }
 
     if (planets != null) {
       for (int i = 0; i < planets.length; i++) {
@@ -89,8 +93,18 @@ class Planet {
       }
     }
     popMatrix();
-
-   //rotate(spin);
   }
+  
+  void drawGradient(float x, float y) {
+  int begC = int(sunR);
+  int minusB = 0;
+  for (int g = int(radius) * 2; g > 0; g--) {
+    fill(begC, begC - 30, sunB - minusB);
+    ellipse(x, y, g, g);
+    begC = (begC + 1);
+    minusB = minusB + 1;
+  }
+}
+
   
 }
